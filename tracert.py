@@ -15,7 +15,7 @@ class TraceRoute:
         self.current_name = None
 
     def send(self):
-        host = socket.gethostbyname(socket.gethostname())
+        # host = socket.gethostbyname(socket.gethostname())
         port = 33434
         icmp = socket.getprotobyname('icmp')
         udp = socket.getprotobyname('udp')
@@ -28,7 +28,7 @@ class TraceRoute:
                                            socket.SOCK_RAW,
                                            icmp)
             receive_socket.settimeout(2.5)
-            receive_socket.bind((host, port))
+            # receive_socket.bind((host, port))
 
             send_socket = socket.socket(socket.AF_INET,
                                         socket.SOCK_DGRAM,
@@ -62,9 +62,10 @@ class TraceRoute:
             else:
                 current_host = '*'
 
-            print("{ttl}\t{host} {time}".format(ttl=ttl,
-                                                host=current_host,
-                                                time=receive_time * 1000))
+            print("{ttl}\t{host} {time} msec".format(
+                                            ttl=ttl,
+                                            host=current_host,
+                                            time=round(receive_time * 1000, 4)))
 
             if self.current_address == self.destination_address \
                     or ttl > self.max_hops:
