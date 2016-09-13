@@ -9,7 +9,7 @@ import fileinput
 def grep_py(args):
     """Searches for pattern in files given on commandline
     and prints matches to standard out.
-    
+
     Args:
         args: commandline arguments.
     """
