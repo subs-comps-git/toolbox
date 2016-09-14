@@ -164,7 +164,7 @@ def send_one_ping(my_socket, dest_addr, ID):
     # Make a dummy heder with a 0 checksum.
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, my_checksum, ID, 1)
     bytesInDouble = struct.calcsize("d")
-    data = (192 - bytesInDouble) * "Q"
+    data = (24 - bytesInDouble) * "Q"
     data = struct.pack("d", time.time()) + data
 
     # Calculate the checksum on the data and the dummy header.
