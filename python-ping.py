@@ -231,8 +231,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         verbose_ping(sys.argv[1])
     else:
-    # verbose_ping("heise.de")
-    # verbose_ping("google.com")
-    # verbose_ping("a-test-url-taht-is-not-available.com")
-    # verbose_ping("192.168.1.1")
+        # verbose_ping("heise.de")
+        # verbose_ping("google.com")
+        # verbose_ping("a-test-url-taht-is-not-available.com")
+        # verbose_ping("192.168.1.1")
         verbose_ping('www.cisco.com')

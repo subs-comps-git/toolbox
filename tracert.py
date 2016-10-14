@@ -5,8 +5,8 @@ import sys
 import os.path
 import time
 import struct
-import random
-import string
+# import random
+# import string
 
 
 class TraceRoute:
@@ -23,8 +23,9 @@ class TraceRoute:
         the path until the destination is reached or *max_hops* is exceeded.
         """
         try:
-                _, current_address = receive_socket.recvfrom(128)
+                receive_packet, current_address = receive_socket.recvfrom(128)
                 # receive_time = time.time() - time_sent
+                # print(receive_packet)
                 self.current_address = current_address[0]
                 try:
                     self.current_name = socket.gethostbyaddr(
@@ -41,11 +42,14 @@ class TraceRoute:
         """Sends a UDP packet to the destination on port 33434."""
         port = 33434
 
-        size = 16
-        s = struct.Struct(str(size) + 's')
-        values = [random.choice(string.ascii_letters + string.digits) for n in range(size)]
-        values = str.encode(''.join(values))
-        data = s.pack(values)
+        size = int(16 / 4)
+        # struct_format = '>{size}i'.format(size=size)
+        s = struct.Struct('>{size}i'.format(size=size))
+        # s = struct.Struct(str(size) + 's')
+        # values = [random.choice(string.ascii_letters + string.digits) for n in range(size)]
+        # values = str.encode(''.join(values))
+        values = [0] * size
+        data = s.pack(*values)
         data = struct.pack(">d", time.time()) + data
 
         send_socket.setsockopt(socket.SOL_IP, socket.IP_TTL, self.ttl)
