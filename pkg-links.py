@@ -16,25 +16,18 @@ def get_files(source_path, topdown=True):
 def make_links(source, destination):
     """Creates symlinks for files in file_list. Accepts both relative and absolute paths"""
     package_files = get_files(source)
-    # base_path = pathlib.Path(package_files[0][0]).parent
-    base_path = pathlib.Path(source)
-    # starting_dir = os.getcwd()
-    index = len(base_path.parts)
-    starting_dir = destination
+    index = len(pathlib.Path(source).parts)
+    base_dir = os.getcwd()
     for path, files in package_files:
         source_path = pathlib.Path(path)
         destination = pathlib.Path(destination)
-        if source_path.is_absolute():
-            # relative_path = os.path.relpath(str(source_path), str(base_path))
-            relative_path = '/'.join(source_path.parts[index:])
-            destination_path = destination / relative_path
-            # source_path = source
-            relative_link = False
-        else:
-            relative_path = '/'.join(source_path.parts[index:])
-            destination_path = destination / relative_path
+        relative_path = '/'.join(source_path.parts[index:])
+        destination_path = destination / relative_path
+        relative = False
+
+        if not source_path.is_absolute():
             source_path = source_path.resolve()
-            relative_link = True
+            relative = True
 
         if not destination_path.exists():
             destination_path.mkdir()
@@ -43,36 +36,30 @@ def make_links(source, destination):
         os.chdir(str(destination_path))
         for file in files:
             link_file = pathlib.Path(file)
-            # source_file = (source_path / file)
-            if relative_link:
-                source_file = source_path.resolve() / file
+            source_file = (source_path / file)
+            if relative:
                 source_file = os.path.relpath(str(source_file))
-            else:
-                source_file = (source_path / file)
+
             try:
                 link_file.symlink_to(source_file)
                 print('Link created: {} -> {}'.format(str(link_file), str(source_file)))
             except FileExistsError:
                 print('{} exists, sckipping'.format(str(link_file)))
                 pass
-        os.chdir(starting_dir)
+        os.chdir(base_dir)
 
 
 def remove_links(source, destination):
     package_files = get_files(source, topdown=False)
-    starting_dir = destination
-    base_path = pathlib.Path(source)
-    index = len(base_path.parts)
-    # print(base_path)
+    base_dir = os.getcwd()
+    index = len(pathlib.Path(source).parts)
+
     for path, files in package_files:
         source_path = pathlib.Path(path)
         destination = pathlib.Path(destination)
+        relative_path = '/'.join(source_path.parts[index:])
+        destination_path = destination / relative_path
 
-        if source_path.is_absolute():
-            relative_path = '/'.join(source_path.parts[index:])
-            destination_path = destination / relative_path
-        else:
-            destination_path = destination / source_path
         try:
             os.chdir(str(destination_path))
             for file in files:
@@ -82,7 +69,7 @@ def remove_links(source, destination):
                     print('{}: link removed'.format(str(link_file)))
                 except FileNotFoundError:
                     print('{} not found, skipping'.format(str(link_file)))
-            os.chdir(starting_dir)
+            os.chdir(base_dir)
             destination_path.rmdir()
             print('{}: directory removed.'.format(destination_path))
         except FileNotFoundError:
