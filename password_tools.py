@@ -12,15 +12,23 @@ class User:
 
     @property
     def email(self):
+        """Returns an email address contructed from first and last. Example:
+	first.last@example.com."""
         return '{first}.{last}@example.com'.format(first=self.first.lower(),
                                                    last=self.last.lower())
 
     @property
     def full_name(self):
+        """"Returns the full name of a person constructed from first and last."""
         return '{first} {last}'.format(first=self.first, last=self.last)
 
     @full_name.setter
     def full_name(self, name):
+        """Alternate way to set the properties, first and last.
+	
+	Args:
+	    name: string. Full name of the person with a space as the separator.
+	"""
         first, last = name.split(' ')
         self.first = first
         self.last = last
@@ -29,9 +37,9 @@ class User:
         """Generates a random string of *length*.
 
         Args:
-            length: integer. os.urandom returns bytes which is two
-                    hexidecimal numbers, hence we divide by to to get
-                    the correct length.
+            length: int. os.urandom returns bytes which is two
+                hexidecimal numbers, hence we divide by to to get
+                the correct length.
         """
         usable_characters = '{letters}{digits}'.format(
                                  letters=string.ascii_letters,
@@ -39,7 +47,13 @@ class User:
         self.password = ''.join(random.sample(usable_characters, length))
 
     def generate_hash(self, hash_type='sha256'):
-        """Generate hash from given string"""
+        """Generate hash from given string.
+	
+	Args:
+	    hash_type: string. optional. any of the acceptable hash algorithms supported by
+	        the hashlib module ('sha256', 'sha512', 'md5', 'dsa', etc), list available
+		using hashlib.algorithms_available.
+	"""
         if hash_type in hashlib.algorithms_available:
             h = hashlib.new(hash_type)
             h.update(self.password.encode('utf-8'))
@@ -54,8 +68,8 @@ def generate_random_string(length=8):
 
     Args:
         length: integer. os.urandom returns bytes which is two
-                hexidecimal numbers, hence we divide by to to get
-                the correct length.
+            hexidecimal numbers, hence we divide by to to get
+            the correct length.
     """
     usable_characters = '{letters}{digits}'.format(
                              letters=string.ascii_letters,
