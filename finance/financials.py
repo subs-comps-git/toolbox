@@ -2,6 +2,7 @@
 
 import math
 import locale
+import decimal
 
 
 class CompoundInterest(object):
@@ -31,33 +32,48 @@ class CompoundInterest(object):
             m: int: compound periods per year.
             t: int: duration of investment in years.
         """
-        self.pv = pv
-        self.r = r
-        self.m = m
-        self.t = t
+        self.pv = decimal.Decimal(pv)
+        self.r = decimal.Decimal(r)
+        self.m = int(m)
+        self.t = int(t)
         locale.setlocale(locale.LC_MONETARY, '')
+        self._cents = decimal.Decimal('0.01')
+        self._up = decimal.ROUND_HALF_UP
 
     def future_value(self):
-        """Prints the future value of an investment."""
-        fv = self.pv * math.pow(1 + self.r / self.m, self.m * self.t)
-        print(locale.currency(fv, grouping=True))
+        """Returns the future value of an investment."""
+        return decimal.Decimal(self.pv * math.pow(1 + self.r / self.m,
+                               self.m * self.t)).quantize(
+                               self._cents, rounding=self._up)
+        # print(locale.currency(fv, grouping=True))
 
     def future_value_yearly(self):
-        """Prints the yearly return of the investment."""
+        """Returns in a list the yearly return of the investment."""
         current_value = self.pv
-        for year in range(1, self.t + 1):
-            current_value *= math.pow(1 + self.r / self.m, self.m)
-            print('Year {}: {}'.format(year,
-                  locale.currency(current_value, grouping=True)))
+        # yearly = []
+        for year in range(self.t):
+            current_value *= decimal.Decimal(math.pow(1 + self.r / self.m,
+                                             self.m))
+            # current_value* *= decimal.Decimal(math.pow(1 + self.r / self.m, self.m))
+            # yearly.append(decimal.Decimal(current_value).quantize(
+                          # self._cents, rounding=self._up))
+            yield current_value.quantize(self._cents, rounding=self._up)
+        # return yearly
 
     def future_value_periodic(self):
-        """Prints the periodic return of the investment."""
+        """Returns in a list the periodic return of the investment."""
         current_value = self.pv
+        periodic = []
         for period in range(1, self.m * self.t + 1):
             current_value *= 1 + self.r / self.m
-            print('Period {}: {}'.format(period,
-                  locale.currency(current_value, grouping=True)))
+            periodic.append(decimal.Decimal(current_value).quantize(
+                            self._cents, rounding=self._up))
+            # print('Period {}: {}'.format(period,
+            #       locale.currency(current_value, grouping=True)))
+        return periodic
 
     def effective_interest_rate(self):
-        """Prints effective interest rate """
-        print(round(math.pow(1 + self.r / self.m, self.m) - 1, 4))
+        """Returns the effective interest rate """
+        return decimal.Decimal(math.pow(
+                               1 + self.r / self.m, self.m) - 1).quantize(
+                               decimal.Decimal('0.00001'))
