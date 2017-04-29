@@ -65,3 +65,6 @@ target/
 
 ###Examples###
 example.*
+
+###Backup files###
+*.bak
