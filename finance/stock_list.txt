@@ -1,0 +1,41 @@
+WMT	Wal-Mart Stores
+JNJ	Johnson & Johnson
+MMM	3M
+UTX	United Technologies
+PG	Procter & Gamble
+PFE	Pfizer
+VZ	Verizon
+MSFT	Microsoft
+KO	Coca-Cola Co.
+MRK	Merck
+INTC	Intel Corp
+TRV	Travelers Co.
+HD	Home Depot
+GE	General Electric
+BA	Boeing Co.
+AXP	American Express
+GS	Goldman Sachs
+NKE	Nike Inc.
+DIS	The Walt Disney Company
+AAPL	Apple Inc.
+UNH	UnitedHealth Group
+V	Visa
+CSCO	Cisco Systems
+IBM	IBM Corp
+DD	DuPont
+XOM	Exxon Mobil
+JPM	JP Morgan Chase
+CVX	Chevron Corp
+CAT	Caterpillar Inc.
+MCD	McDonald's
+
+s	symbol
+l1	price
+d1	date
+t1	time
+c1	change
+o	open
+h	high
+g	low
+y	yield
+d	div_share
