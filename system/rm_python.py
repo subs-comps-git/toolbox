@@ -1,7 +1,7 @@
 """Removes links from old versions of python on OSX.
 
-Useful for removing links between differing versions without deleting the version
-itself.
+Useful for removing links between differing python versions without deleting
+python itself.
 """
 
 import os
@@ -15,14 +15,15 @@ def get_options():
     Args:
         -d: Optional boolean argument to flag links for removal.
         version: A string version number of python to view or remove.
-        target: A path string containing links to python binaries, e.g. /usr/bin.
+        target: A path string containing symlinks to python binaries, e.g. /usr/bin.
     Returns:
         A dictionary mapping of arguments.
     """
     parser = argparse.ArgumentParser(description="Remove old versions of python from OSX")
     parser.add_argument("-d", help="delete links", action="store_true")
-    parser.add_argument("version", help="Python version", action="store", type=str)
-    parser.add_argument("target", help="Location of python links", action="store", type=str)
+    parser.add_argument("version", help="Python version, e.g. 2.6", action="store", type=str)
+    parser.add_argument("target", help="Location of python symlinks, e.g. /usr/bin.",
+                        action="store", type=str)
     return vars(parser.parse_args())
 
 
@@ -35,17 +36,17 @@ def print_links(links):
     print("\nMatches:")
     for f in links:
         print(f, end='')
-        print("{0:>}".format(os.readlink(f)))
+        print("  {0}".format(os.readlink(f)))
 
 
 def find_links(src, dst):
     """Find symlinks and return list.
 
     Args:
-        src: A string containing the path to python
-        dst: A path string containing links from the src, e.g. /usr/bin.
+        src: A string containing the path to python.
+        dst: A path string containing symlinks to python binaries, e.g. /usr/bin.
     Returns:
-        A list of link path strings.
+        A list of symlink path strings.
     """
     dir_compare = filecmp.dircmp(src, dst)
     links = [os.path.join(dst, link) for link in dir_compare.common_files
@@ -55,12 +56,12 @@ def find_links(src, dst):
 
 
 def rm_links(links):
-    """Remove symlinks from *target* and print removals.
+    """Remove symlinks from *target* location and print removals.
 
     Args:
-        links: A list of link path strings.
+        links: A list of symlink path strings.
     Returns:
-        Prints removed links.
+        Prints removed symlinks.
     """
     try:
         for link in links:
@@ -72,7 +73,7 @@ def rm_links(links):
 
 
 def main():
-    """Program to remove symlinks of old python versions from target directory."""
+    """Program to remove symlinks from old versions of python in *target* directory."""
     base = '/System/Library/Frameworks/Python.framework/Versions'
 
     args = get_options()
