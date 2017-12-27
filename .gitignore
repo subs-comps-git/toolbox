@@ -68,3 +68,9 @@ example.*
 
 ###Backup files###
 *.bak
+
+###Sublime Text 3
+*.sublime-workspace
+
+###Data files###
+*.csv
