@@ -74,3 +74,4 @@ example.*
 
 ###Data files###
 *.csv
+sh.exe.stackdump
