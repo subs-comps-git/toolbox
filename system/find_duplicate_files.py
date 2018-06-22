@@ -7,6 +7,7 @@
 import xxhash
 import sys
 import os
+import pprint
 
 
 def chunk_reader(fobj, chunk_size=1024):
@@ -55,7 +56,7 @@ def sort_by_size(paths):
     return hashes_by_size
 
 
-def hash_files(sorted_files):
+def hash_files(sorted_files, first_chunk=False):
     hashes_full = {}
     for _, files in sorted_files.items():
         if len(files) < 2:
@@ -74,63 +75,29 @@ def hash_files(sorted_files):
 
 
 def check_for_duplicates(paths, myhash=xxhash.xxh64):
-    hashes_by_size = {}
-    hashes_on_1k = {}
-    hashes_full = {}
+    """Return a dictionary of duplicate files
 
-    for path in paths:
-        for dirpath, dirnames, filenames in os.walk(path):
-            for filename in filenames:
-                full_path = os.path.join(dirpath, filename)
-                try:
-                    file_size = os.path.getsize(full_path)
-                except OSError:
-                    # Not accessible (permissions, etc)
-                    pass
 
-                duplicate = hashes_by_size.get(file_size)
-                if duplicate:
-                    hashes_by_size[file_size].append(full_path)
-                else:
-                    hashes_by_size[file_size] = []  # create list for this file size
-                    hashes_by_size[file_size].append(full_path)
+    """
+    hashes_by_size = sort_by_size(paths)
+    hashes_full = hash_files(hashes_by_size)
+    duplicates = {}
 
-    # For all files with same file size, get hash on 1st 1k bytes.
-    for _, files in hashes_by_size.items():
-        if len(files) < 2:
-            continue
+    for _, files in hashes_full.items():
+        if len(files) > 1:
+            first_file = files.pop(0)
+            first_file = os.path.basename(first_file)
+            duplicates[first_file] = []
+            for file in files:
+                print(f'{file} is a duplicate of {first_file}')
+                duplicates[first_file].append(file)
 
-        for filename in files:
-            small_hash = get_hash(filename, first_chunk=True)
-
-            duplicate = hashes_on_1k.get(small_hash)
-            if duplicate:
-                hashes_on_1k[small_hash].append(filename)
-            else:
-                hashes_on_1k[small_hash] = []
-                hashes_on_1k[small_hash].append(filename)
-
-    # for all files with hash on 1st 1k bytes, get hash on full file - collisions are duplicates
-    for _, files in hashes_on_1k.items():
-        if len(files) < 2:
-            continue
-
-        for filename in files:
-            full_hash = get_hash(filename, first_chunk=False)
-
-            duplicate = hashes_full.get(full_hash)
-            if duplicate:
-                print(f'Duplicate found: {filename} and {duplicate}')
-            else:
-                hashes_full[full_hash] = filename
-                print(f'\nNew hash....{full_hash}')
-                print(f'comparing file {filename}')
-                print('------------------------')
+    return duplicates
 
 
 def main():
     if sys.argv[1:]:
-        check_for_duplicates(sys.argv[1:])
+        pprint.pprint(check_for_duplicates(sys.argv[1:]))
     else:
         print('Pass the paths to check as parameters to the script.')
 
