@@ -78,3 +78,9 @@ class CompoundInterest(object):
                 print(locale.currency(x, grouping=True))
         except TypeError:
             print(locale.currency(func(), grouping=True))
+
+
+def calculate_disbursement(amt, percentage):
+    """Returns number minus *percentage* equal to *amt* to disburse."""
+    locale.setlocale(locale.LC_MONETARY, '')
+    return locale.currency(amt / (1.0 - percentage))
