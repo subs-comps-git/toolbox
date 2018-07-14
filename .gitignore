@@ -66,6 +66,7 @@ target/
 
 ###Examples###
 example.*
+scratch*
 
 ###Backup files###
 *.bak
