@@ -1,5 +1,7 @@
-"""Download data from swgoh.gg and prepare data to export to spreadsheet
+"""Download statistics from swgoh.gg
 
+Scrapes Galactic Power(GP) guild statistics from https://swgoh.gg
+and creates a list of gathered data.
 
 """
 
@@ -22,20 +24,20 @@ def get_html(url):
     """
     expire = datetime.timedelta(hours=1)
     requests_cache.install_cache(expire_after=expire)
-    return requests.get(url).text
+    return requests.get(url)
 
 
 def make_soup(html_data, parser):
     """Parse website content into beautiful soup object
 
     Args:
-        html_data (str): website content.
+        html_data (obj): bs4 response object, website content.
         parser (str): name of html parser.
 
     Returns:
         obj: beautiful soup object.
     """
-    return BeautifulSoup(html_data, parser)
+    return BeautifulSoup(html_data.text, parser)
 
 
 def make_gp_list(bs4_obj):
