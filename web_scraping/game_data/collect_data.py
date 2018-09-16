@@ -5,7 +5,7 @@
 
 
 import sqlite3
-import get_gp_data as gd
+import get_gp_data as gp_data
 import load_sql as load
 
 
@@ -49,9 +49,9 @@ def main():
     insert_names = 'INSERT INTO users (name) VALUES (?);'
 
     # Collect data
-    html_data = gd.get_html(url)
-    swgoh_soup = gd.make_soup(html_data, 'html5lib')
-    gp = gd.make_gp_list(swgoh_soup)
+    html_data = gp_data.get_html(url)
+    swgoh_soup = gp_data.make_soup(html_data, 'html5lib')
+    gp = gp_data.make_gp_list(swgoh_soup)
 
     # Load database
     db_name = 'swgoh.db'
