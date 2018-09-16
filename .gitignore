@@ -60,6 +60,9 @@ target/
 cache.sqlite
 records.sql
 
+# History files
+hist.txt
+
 ###PyCharm###
 
 # PyCharm
