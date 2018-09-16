@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyreadline = "*"
+"beautifulsoup4" = "*"
+requests = "*"
+"html5lib" = "*"
+requests-cache = "*"
+records = "*"
+pandas = "*"
+maya = "*"
+google-api-python-client = "*"
+"oauth2client" = "*"
+pytest = "*"
+attrs = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
